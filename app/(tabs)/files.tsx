@@ -1,10 +1,12 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { View, Text } from 'react-native';
 import React from 'react';
-import Header from '@/components/header/Header';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { StatusBar } from 'expo-status-bar';
+import Header from '@/components/header/Header';
 import StatusBarColor from '@/components/Status/StatusBarColor';
 
-const index = () => {
+const files = () => {
+
     return (
         <SafeAreaView className='flex-1 bg-neutral-100 dark:bg-gray-800'>
             <StatusBarColor />
@@ -22,6 +24,4 @@ const index = () => {
     );
 };
 
-export default index;
-
-const styles = StyleSheet.create({});
+export default files;
