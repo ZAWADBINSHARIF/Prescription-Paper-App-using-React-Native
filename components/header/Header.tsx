@@ -6,11 +6,11 @@ import { useColorScheme } from 'nativewind';
 
 const Header = () => {
     const { colorScheme, toggleColorScheme } = useColorScheme();
-    const [headerName, setHeaderName] = useState<"Home" | "Files">("Home");
+    const [headerName, setHeaderName] = useState<"Home" | "Files" | "Prescription">("Home");
     const pathname = usePathname();
 
     useEffect(() => {
-        setHeaderName(pathname === "/" ? "Home" : "Files");
+        setHeaderName(pathname === "/" ? "Home" : pathname === "/files" ? "Files" : "Prescription");
     }, [pathname]);
 
     return (
