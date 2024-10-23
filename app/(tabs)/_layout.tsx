@@ -5,12 +5,14 @@ import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { View, Text, Pressable } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useColorScheme } from 'nativewind';
+import useStyleChange from '@/hooks/useStyleChange';
 // import { Colors } from '@/constants/Colors';
 // import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function TabLayout() {
   // const colorScheme = useColorScheme();
   const { colorScheme } = useColorScheme();
+  const { StyleChange } = useStyleChange();
 
   return (
 
@@ -44,8 +46,8 @@ export default function TabLayout() {
                   gap: 3
                 }}
               >
-                <TabBarIcon name={focused ? 'home' : 'home-outline'} className={`${focused ? 'text-blue-600' : 'text-gray-500'}`} />
-                <Text className={`text-xs font-normal ${focused ? 'text-blue-600' : 'text-gray-500'}`}>Home</Text>
+                <TabBarIcon name={focused ? 'home' : 'home-outline'} className={`${focused ? StyleChange("text-blue-600", "text-white") : 'text-gray-500'}`} />
+                <Text className={`text-xs font-normal ${focused ? StyleChange("text-blue-600", "text-white") : 'text-gray-500'}`}>Home</Text>
               </View>
             );
           }
@@ -76,8 +78,8 @@ export default function TabLayout() {
                   gap: 3
                 }}
               >
-                <TabBarIcon name={focused ? 'document' : 'document-outline'} className={`${focused ? 'text-blue-600' : 'text-gray-500'}`} />
-                <Text className={`text-xs font-normal ${focused ? 'text-blue-600' : 'text-gray-500'}`}>Files</Text>
+                <TabBarIcon name={focused ? 'document' : 'document-outline'} className={`${focused ? StyleChange("text-blue-600", "text-white") : 'text-gray-500'}`} />
+                <Text className={`text-xs font-normal ${focused ? StyleChange("text-blue-600", "text-white") : 'text-gray-500'}`}>Files</Text>
               </View>
             );
           }
