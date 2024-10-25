@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { useNavigation, usePathname } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import { usePathname } from 'expo-router';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useColorScheme } from 'nativewind';
 import useStyleChange from '@/hooks/useStyleChange';
 
@@ -27,7 +27,7 @@ const Header = () => {
                     {
                         colorScheme === 'dark' ?
                             <Ionicons name='sunny' color={'white'} size={30} onPress={toggleColorScheme} /> :
-                            <Ionicons name='moon' size={30} onPress={toggleColorScheme} />
+                            <MaterialCommunityIcons name="weather-night" size={30} color="black" onPress={toggleColorScheme} />
                     }
                 </View>
             </View>

@@ -46,8 +46,8 @@ export default function TabLayout() {
                   gap: 3
                 }}
               >
-                <TabBarIcon name={focused ? 'home' : 'home-outline'} className={`${focused ? StyleChange("text-blue-600", "text-white") : 'text-gray-500'}`} />
-                <Text className={`text-xs font-normal ${focused ? StyleChange("text-blue-600", "text-white") : 'text-gray-500'}`}>Home</Text>
+                <TabBarIcon name={focused ? 'home' : 'home-outline'} className={`${focused ? StyleChange("text-blue-600", "text-blue-500") : 'text-gray-500'}`} />
+                <Text className={`text-xs font-normal ${focused ? StyleChange("text-blue-600", "text-blue-500") : 'text-gray-500'}`}>Home</Text>
               </View>
             );
           }
@@ -78,8 +78,8 @@ export default function TabLayout() {
                   gap: 3
                 }}
               >
-                <TabBarIcon name={focused ? 'document' : 'document-outline'} className={`${focused ? StyleChange("text-blue-600", "text-white") : 'text-gray-500'}`} />
-                <Text className={`text-xs font-normal ${focused ? StyleChange("text-blue-600", "text-white") : 'text-gray-500'}`}>Files</Text>
+                <TabBarIcon name={focused ? 'document' : 'document-outline'} className={`${focused ? StyleChange("text-blue-600", "text-blue-500") : 'text-gray-500'}`} />
+                <Text className={`text-xs font-normal ${focused ? StyleChange("text-blue-600", "text-blue-500") : 'text-gray-500'}`}>Files</Text>
               </View>
             );
           }
