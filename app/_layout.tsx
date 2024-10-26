@@ -6,8 +6,9 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import GlobalValueProvider from '@/context/GlobalValueProvider';
+import { PaperProvider } from 'react-native-paper';
+
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -30,16 +31,17 @@ export default function RootLayout() {
   }
 
   return (
-    <GestureHandlerRootView >
+    <PaperProvider>
+      <GlobalValueProvider >
+        <Stack
+          screenOptions={{
+            'headerShown': false
+          }}
+        >
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        </Stack>
 
-      <Stack
-        screenOptions={{
-          'headerShown': false
-        }}
-      >
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      </Stack>
-
-    </GestureHandlerRootView>
+      </GlobalValueProvider>
+    </PaperProvider>
   );
 }

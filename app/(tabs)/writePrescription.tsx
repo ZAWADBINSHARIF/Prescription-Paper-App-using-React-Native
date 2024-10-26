@@ -1,47 +1,30 @@
-import { View, Text, TextInput, ScrollView, KeyboardAvoidingView, Platform, NativeScrollEvent } from 'react-native';
-import React, { useState } from 'react';
+import { View, Text, TextInput, ScrollView, KeyboardAvoidingView, Platform, NativeScrollEvent, Keyboard } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import StatusBarColor from '@/components/Status/StatusBarColor';
 import Header from '@/components/header/Header';
 import useStyleChange from '@/hooks/useStyleChange';
-import { AnimatedFAB } from 'react-native-paper';
-import { PrescribedMedicine } from '@/interfaces';
+import { AnimatedFAB, FAB } from 'react-native-paper';
 import MedicineForm from '@/components/MedicineForm';
-import { Fontisto } from '@expo/vector-icons';
-import * as Crypto from 'expo-crypto';
-
+import { Entypo, FontAwesome, Fontisto } from '@expo/vector-icons';
+import useGlobalContext from '@/hooks/useGlobalContext';
 
 
 const writePrescription = () => {
 
     const { StyleChange } = useStyleChange();
+    const {
+        patientDetails,
+        prescribedMedicines,
+        patientDetailsError,
+        handlePatientDetailsValue,
+        handleAddMedicineForm,
+        handleSaveAndCreatePDF } = useGlobalContext();
 
-    const [prescribedMedicine, setPrescribedMedicine] = useState<PrescribedMedicine[]>([]);
     const [fabExtend, setFabExtend] = useState(true);
     const [fabVisiable, setFabVisiable] = useState(true);
+    const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
-    const handleAddMedicineForm = () => {
-
-        const id = Crypto.randomUUID();
-        const newMedicine: PrescribedMedicine = {
-            id,
-            name: "",
-            power: "",
-            medicineMealtime: {
-                morning: false,
-                noon: false,
-                night: false
-            },
-        };
-
-        setPrescribedMedicine([newMedicine, ...prescribedMedicine]);
-    };
-
-    const handleRemoveMedicineForm = (id: string) => {
-        const newMedicineForms = prescribedMedicine.filter(item => id !== item.id);
-        console.log("remove");
-        setPrescribedMedicine(newMedicineForms);
-    };
 
     const handleOnScroll = ({ nativeEvent }: { nativeEvent: NativeScrollEvent; }) => {
         const { contentOffset, contentSize, layoutMeasurement } = nativeEvent;
@@ -51,7 +34,9 @@ const writePrescription = () => {
 
         const isEndReached = contentOffset.y + layoutMeasurement.height >= contentSize.height - 20;
 
-        if (currentScrollPosition <= 0 && isEndReached) {
+        if (isKeyboardVisible) {
+            setFabVisiable(false);
+        } else if (currentScrollPosition <= 0 && isEndReached) {
             setFabVisiable(true);
         } else if (isEndReached && currentScrollPosition >= 0) {
             setFabVisiable(false);
@@ -60,6 +45,17 @@ const writePrescription = () => {
         }
 
     };
+
+    useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true));
+        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => setKeyboardVisible(false));
+
+        return () => {
+            keyboardDidHideListener.remove();
+            keyboardDidShowListener.remove();
+        };
+
+    }, []);
 
     return (
         <SafeAreaView className='flex-1 bg-neutral-100 dark:bg-gray-800'>
@@ -76,13 +72,19 @@ const writePrescription = () => {
                     <View className='py-3 gap-1 justify-center space-y-3 w-full'>
 
                         <View className='flex-row space-x-3'>
-                            <TextInput className='bg-neutral-100 flex-1 rounded-xl p-2 text-lg' placeholder='Name' />
-                            <TextInput className='bg-neutral-100 flex-1 rounded-xl p-2 text-lg' placeholder='Age' />
+                            <TextInput value={patientDetails.name} onChangeText={(value) => handlePatientDetailsValue("name", value)} className='bg-neutral-100 flex-1 rounded-xl p-2 text-lg' placeholder='Name' />
+                            <TextInput value={patientDetails.age} onChangeText={(value) => handlePatientDetailsValue("age", value)} keyboardType="numeric" className='bg-neutral-100 flex-1 rounded-xl p-2 text-lg' placeholder='Age' />
                         </View>
+                        {patientDetailsError &&
+                            <View>
+                                <Text className='text-red-500 font-semibold'>⚠ You have to write at least patient's name and age</Text>
+                            </View>
+                        }
 
                         <View className='flex-row space-x-3'>
-                            <TextInput className='bg-neutral-100 flex-1 rounded-xl p-2 text-lg' placeholder='Pressure' />
-                            <TextInput className='bg-neutral-100 flex-1 rounded-xl p-2 text-lg' placeholder='Diabetic' />
+                            <TextInput value={patientDetails.pressure} onChangeText={(value) => handlePatientDetailsValue("pressure", value)} className='bg-neutral-100 flex-1 rounded-xl p-2 text-lg' placeholder='Pressure' />
+                            <TextInput value={patientDetails.diabetic} onChangeText={(value) => handlePatientDetailsValue("diabetic", value)} className='bg-neutral-100 flex-1 rounded-xl p-2 text-lg' placeholder='Diabetic' />
+                            <TextInput value={patientDetails.blood} onChangeText={(value) => handlePatientDetailsValue("blood", value)} className='bg-neutral-100 flex-1 rounded-xl p-2 text-lg' placeholder='Blood' />
                         </View>
 
                     </View>
@@ -119,16 +121,15 @@ const writePrescription = () => {
                         >
 
 
-                            {prescribedMedicine.map(item => <MedicineForm
+                            {prescribedMedicines.map(item => <MedicineForm
                                 key={item.id}
                                 id={item.id}
                                 name={item.name}
                                 power={item.power}
                                 note={item?.note ?? ""}
-                                medicineMealtime={item.medicineMealtime}
-                                handleRemoveMedicineForm={handleRemoveMedicineForm} />)}
+                                medicineMealtime={item.medicineMealtime} />)}
 
-                            {prescribedMedicine.length <= 0 &&
+                            {prescribedMedicines.length <= 0 &&
                                 <View className='flex-1 items-center py-36 justify-center space-y-3'>
                                     <Fontisto name="pills" size={48} color={"gray"} />
                                     <Text className='text-center text-gray-400 text-sm'>No medicine added</Text>
@@ -142,13 +143,25 @@ const writePrescription = () => {
                 </View>
 
                 <AnimatedFAB
-                    icon="plus"
+                    icon={() => <Entypo name="plus" size={24} color="white" />}
                     label='Add medicine'
                     extended={fabExtend}
-                    className={`absolute bottom-8 right-5 bg-blue-600 rounded-full ${fabVisiable ? "" : "hidden"}`}
+                    className={`absolute bottom-8 right-5 bg-blue-600 rounded-full ${isKeyboardVisible ? "hidden" : fabVisiable ? "" : "hidden"}`}
                     color='white'
                     onPress={handleAddMedicineForm}
                 />
+
+                {prescribedMedicines.length > 0 &&
+                    < AnimatedFAB
+                        label='Save'
+                        className={`absolute bottom-8 left-5 bg-blue-600 rounded-full ${isKeyboardVisible ? "hidden" : fabVisiable ? "" : "hidden"}`}
+                        color='white'
+                        onPress={handleSaveAndCreatePDF}
+                        icon={() => <FontAwesome name="file-pdf-o" size={24} color="white" />}
+                        extended={fabExtend}
+                        animateFrom='left'
+                    />
+                }
 
             </View >
         </SafeAreaView >
