@@ -1,17 +1,18 @@
 import { View, Text } from 'react-native';
 import React from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import Header from '@/components/header/Header';
+
 import StatusBarColor from '@/components/Status/StatusBarColor';
+import useStyleChange from '@/hooks/useStyleChange';
 
 const files = () => {
 
+    const { StyleChange } = useStyleChange();
+
     return (
-        <SafeAreaView className='flex-1 bg-neutral-100 dark:bg-gray-800'>
+        <View className={`flex-1 ${StyleChange("bg-neutral-100", "bg-gray-800")}`}>
             <StatusBarColor />
 
             <View className='flex-1'>
-                <Header />
 
                 <View className='px-6 py-4 h-full'>
 
@@ -19,7 +20,7 @@ const files = () => {
 
             </View>
 
-        </SafeAreaView>
+        </View>
     );
 };
 

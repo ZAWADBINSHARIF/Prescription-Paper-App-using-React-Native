@@ -36,7 +36,7 @@ const Header = () => {
     }, [medicineFormErrorsIDs, patientDetailsError, pathname]);
 
     return (
-        <View className='h-16 mt-2'
+        <View className='h-16 mt-2 mb-4'
             style={{
                 paddingHorizontal: 16
             }}

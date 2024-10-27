@@ -1,8 +1,6 @@
 import { View, Text, TextInput, ScrollView, KeyboardAvoidingView, Platform, NativeScrollEvent, Keyboard } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import StatusBarColor from '@/components/Status/StatusBarColor';
-import Header from '@/components/header/Header';
 import useStyleChange from '@/hooks/useStyleChange';
 import { AnimatedFAB, FAB } from 'react-native-paper';
 import MedicineForm from '@/components/MedicineForm';
@@ -58,12 +56,10 @@ const writePrescription = () => {
     }, []);
 
     return (
-        <SafeAreaView className='flex-1 bg-neutral-100 dark:bg-gray-800'>
+        <View className={`flex-1 ${StyleChange("bg-neutral-100", "bg-gray-800")}`}>
             <StatusBarColor />
 
-            <Header />
-
-            <View className='px-6 pt-4 flex-1'>
+            <View className='px-6 flex-1'>
 
                 {/* Patient's Details  */}
                 <View className={`${StyleChange("bg-white", "bg-gray-900")} rounded-xl px-3 py-1 w-full`}>
@@ -165,7 +161,7 @@ const writePrescription = () => {
                 }
 
             </View >
-        </SafeAreaView >
+        </View >
     );
 };
 

@@ -4,7 +4,7 @@ const useStyleChange = () => {
     const { colorScheme } = useColorScheme();
 
     const StyleConfig = {
-        StyleChange: (lightColor: string, darkColor: string): string => colorScheme === 'light' ? lightColor : darkColor
+        StyleChange: (lightColor: string = "bg-white", darkColor: string = "bg-gray-900"): string => colorScheme === 'light' ? lightColor : darkColor
     };
 
 
