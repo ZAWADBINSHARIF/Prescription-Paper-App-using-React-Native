@@ -126,6 +126,7 @@ const writePrescription = () => {
                                 id={item.id}
                                 name={item.name}
                                 power={item.power}
+                                day={item.day}
                                 note={item?.note ?? ""}
                                 medicineMealtime={item.medicineMealtime} />)}
 

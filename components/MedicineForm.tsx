@@ -9,7 +9,7 @@ import useGlobalContext from '@/hooks/useGlobalContext';
 
 
 
-const MedicineForm = ({ id, name, power, note, medicineMealtime }: PrescribedMedicine) => {
+const MedicineForm = ({ id, name, power, day, note, medicineMealtime }: PrescribedMedicine) => {
 
     const { StyleChange } = useStyleChange();
     const { setPrescribedMedicineValue, handleRemoveMedicineForm, medicineFormErrorsIDs } = useGlobalContext();
@@ -42,13 +42,11 @@ const MedicineForm = ({ id, name, power, note, medicineMealtime }: PrescribedMed
                     <Checkbox value={medicineMealtime.night} onValueChange={(value) => setPrescribedMedicineValue(id, "medicineMealtime", { ...medicineMealtime, "night": value })} className='rounded-full' color={"rgb(37 99 235)"} />
                 </View>
             </View>
-            {hasError &&
-                <View>
-                    <Text className='text-red-500 font-semibold'>⚠ Fill the medicine name and mealtime</Text>
-                </View>
-            }
+
             <View className='flex-row'>
-                <View className='flex-1'>
+                <View className='flex-1 flex-row space-x-3'>
+                    <TextInput value={day} onChangeText={(value) => setPrescribedMedicineValue(id, "day", value)}
+                        placeholder='Days' className='bg-neutral-100 flex-1 rounded-xl p-2 text-sm' keyboardType='numeric' />
                     <TextInput value={note} onChangeText={(value) => setPrescribedMedicineValue(id, "note", value)}
                         placeholder='Note' className='bg-neutral-100 flex-1 rounded-xl p-2 text-sm' />
                 </View>
@@ -57,6 +55,12 @@ const MedicineForm = ({ id, name, power, note, medicineMealtime }: PrescribedMed
                         onPress={() => handleRemoveMedicineForm(id)} />
                 </View>
             </View>
+
+            {hasError &&
+                <View>
+                    <Text className='text-red-500 font-semibold'>⚠ Fill the medicine name, mealtime and days</Text>
+                </View>
+            }
 
         </Animated.View>
 

@@ -5,27 +5,35 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useColorScheme } from 'nativewind';
 import useStyleChange from '@/hooks/useStyleChange';
 import useGlobalContext from '@/hooks/useGlobalContext';
+import useLocalStorage from '@/hooks/useLocalStorage';
 
 const Header = () => {
+    const { setItem } = useLocalStorage();
     const { patientDetailsError, medicineFormErrorsIDs } = useGlobalContext();
-    const { colorScheme, toggleColorScheme } = useColorScheme();
+    const { colorScheme, toggleColorScheme, setColorScheme } = useColorScheme();
     const { StyleChange } = useStyleChange();
     const pathname = usePathname();
 
     const [headerName, setHeaderName] = useState<"Home" | "Files" | "Prescription">("Home");
     const [errorText, setErrorText] = useState("");
 
+
+    const setThemeColor = async () => {
+        await setItem("theme_color", colorScheme === "light" ? "dark" : "light");
+    };
+
+
     useEffect(() => {
         setHeaderName(pathname === "/" ? "Home" : pathname === "/files" ? "Files" : "Prescription");
     }, [pathname]);
 
     useEffect(() => {
-        if (medicineFormErrorsIDs.length > 0 || patientDetailsError) {
+        if ((medicineFormErrorsIDs.length > 0 || patientDetailsError) && pathname === "/writePrescription") {
             setErrorText("⚠ Write the prescription properly");
         } else {
             setErrorText("");
         }
-    }, [medicineFormErrorsIDs]);
+    }, [medicineFormErrorsIDs, patientDetailsError, pathname]);
 
     return (
         <View className='h-16 mt-2'
@@ -44,8 +52,14 @@ const Header = () => {
                 <View>
                     {
                         colorScheme === 'dark' ?
-                            <Ionicons name='sunny' color={'white'} size={30} onPress={toggleColorScheme} /> :
-                            <MaterialCommunityIcons name="weather-night" size={30} color="black" onPress={toggleColorScheme} />
+                            <Ionicons name='sunny' color={'white'} size={30} onPress={() => {
+                                toggleColorScheme();
+                                setThemeColor();
+                            }} /> :
+                            <MaterialCommunityIcons name="weather-night" size={30} color="black" onPress={() => {
+                                toggleColorScheme();
+                                setThemeColor();
+                            }} />
                     }
                 </View>
             </View>

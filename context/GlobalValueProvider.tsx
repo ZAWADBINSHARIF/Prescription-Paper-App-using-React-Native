@@ -1,6 +1,9 @@
 import { MedicineMealtime, PatientDetails, PrescribedMedicine } from '@/interfaces';
-import React, { createContext, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 import * as Crypto from 'expo-crypto';
+import { useColorScheme } from 'nativewind';
+import useLocalStorage from '@/hooks/useLocalStorage';
+import { ColorSchemeName } from 'nativewind/dist/style-sheet/color-scheme';
 
 
 interface GlobalContextInterface {
@@ -44,6 +47,7 @@ const GlobalValueProvider = ({ children }: { children: React.ReactNode; }) => {
             id,
             name: "",
             power: "",
+            day: "",
             medicineMealtime: {
                 morning: false,
                 noon: false,
@@ -75,7 +79,7 @@ const GlobalValueProvider = ({ children }: { children: React.ReactNode; }) => {
 
     const checkInvalidInputValue = (): boolean => {
         const errorFormIDs = prescribedMedicines.filter(item => {
-            if (!item.name || (!item.medicineMealtime.morning && !item.medicineMealtime.noon && !item.medicineMealtime.night)) {
+            if (!item.name || !item.day || (!item.medicineMealtime.morning && !item.medicineMealtime.noon && !item.medicineMealtime.night)) {
                 return item;
             }
         }).map(item => item.id);

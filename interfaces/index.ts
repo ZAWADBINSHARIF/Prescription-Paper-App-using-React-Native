@@ -16,6 +16,7 @@ export interface PrescribedMedicine {
     id: string,
     name: string,
     power: string,
+    day: string;
     note?: string,
     medicineMealtime: MedicineMealtime;
 }
