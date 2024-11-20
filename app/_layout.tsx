@@ -42,7 +42,7 @@ export default function RootLayout() {
   useEffect(() => {
     if (loaded && !isLoading) {
       SplashScreen.hideAsync();
-      // router.push("/(tabs)/writePrescription");
+      router.push("/(tabs)/files");
     }
   }, [loaded, isLoading]);
 
