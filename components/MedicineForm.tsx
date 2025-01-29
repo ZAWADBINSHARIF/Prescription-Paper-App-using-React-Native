@@ -3,11 +3,12 @@ import React, { memo, useEffect, useState } from 'react';
 import Checkbox from 'expo-checkbox';
 import useStyleChange from '@/hooks/useStyleChange';
 import { FontAwesome } from '@expo/vector-icons';
-import Animated, { SlideInRight } from 'react-native-reanimated';
+import Animated, { LinearTransition, SlideInRight, SlideOutLeft } from 'react-native-reanimated';
 import { PrescribedMedicine } from '@/interfaces';
 import useGlobalContext from '@/hooks/useGlobalContext';
 
 
+const _layout = LinearTransition.springify().damping(15);
 
 const MedicineForm = ({ id, name, power, day, note, medicineMealtime }: PrescribedMedicine) => {
 
@@ -26,8 +27,11 @@ const MedicineForm = ({ id, name, power, day, note, medicineMealtime }: Prescrib
     }, [medicineFormErrorsIDs]);
 
     return (
-
-        <Animated.View entering={SlideInRight} className={`${StyleChange("bg-white", "bg-gray-900")} rounded-xl py-3 px-3 space-y-3 mb-3`}>
+        <Animated.View
+            entering={SlideInRight.springify().damping(15)}
+            exiting={SlideOutLeft}
+            layout={_layout}
+            className={`${StyleChange("bg-white", "bg-gray-900")} rounded-xl py-3 px-3 space-y-3 mb-3`}>
 
             <View className='space-x-3 justify-around w-full flex-row'>
                 <View className='flex-row flex-1 space-x-3'>
@@ -48,7 +52,8 @@ const MedicineForm = ({ id, name, power, day, note, medicineMealtime }: Prescrib
                     <TextInput value={day} onChangeText={(value) => setPrescribedMedicineValue(id, "day", value)}
                         placeholder='Days' className='bg-neutral-100 flex-1 rounded-xl p-2 text-sm' keyboardType='numeric' />
                     <TextInput value={note} onChangeText={(value) => setPrescribedMedicineValue(id, "note", value)}
-                        placeholder='Note' className='bg-neutral-100 flex-1 rounded-xl p-2 text-sm' />
+                        placeholder='Note' className='bg-neutral-100 flex-1 rounded-xl p-2 text-sm'
+                    />
                 </View>
                 <View className='justify-center px-4'>
                     <FontAwesome name="remove" size={24} color="rgb(239 68 68)" className='text-white'

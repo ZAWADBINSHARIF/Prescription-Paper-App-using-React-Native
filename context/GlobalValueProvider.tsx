@@ -56,13 +56,12 @@ const GlobalValueProvider = ({ children }: { children: React.ReactNode; }) => {
         };
 
         setPrescribedMedicines(prev => {
-            return [newMedicine, ...prev];
+            return [...prev, newMedicine];
         });
     };
 
     const handleRemoveMedicineForm = (id: string) => {
-        const newMedicineForms = prescribedMedicines.filter(item => id !== item.id);
-        setPrescribedMedicines(newMedicineForms);
+        setPrescribedMedicines(prev => [...prev.filter(item => item.id !== id)]);
     };
 
     const setPrescribedMedicineValue = (id: string, key: keyof PrescribedMedicine, value: string | MedicineMealtime) => {

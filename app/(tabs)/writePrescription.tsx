@@ -6,7 +6,10 @@ import { AnimatedFAB, FAB } from 'react-native-paper';
 import MedicineForm from '@/components/MedicineForm';
 import { Entypo, FontAwesome, Fontisto } from '@expo/vector-icons';
 import useGlobalContext from '@/hooks/useGlobalContext';
+import Animated, { LinearTransition } from 'react-native-reanimated';
 
+
+const _layout = LinearTransition.springify().damping(15);
 
 const writePrescription = () => {
 
@@ -26,22 +29,23 @@ const writePrescription = () => {
 
     const handleOnScroll = ({ nativeEvent }: { nativeEvent: NativeScrollEvent; }) => {
         const { contentOffset, contentSize, layoutMeasurement } = nativeEvent;
-
         const currentScrollPosition = Math.floor(contentOffset?.y) ?? 0;
-        setFabExtend(currentScrollPosition <= 0);
+
+        if (fabExtend !== (currentScrollPosition <= 0)) {
+            setFabExtend(currentScrollPosition <= 0);
+        }
 
         const isEndReached = contentOffset.y + layoutMeasurement.height >= contentSize.height - 20;
 
         if (isKeyboardVisible) {
-            setFabVisiable(false);
+            if (fabVisiable) setFabVisiable(false);
         } else if (currentScrollPosition <= 0 && isEndReached) {
-            setFabVisiable(true);
+            if (!fabVisiable) setFabVisiable(true);
         } else if (isEndReached && currentScrollPosition >= 0) {
-            setFabVisiable(false);
+            if (fabVisiable) setFabVisiable(false);
         } else {
-            setFabVisiable(true);
+            if (!fabVisiable) setFabVisiable(true);
         }
-
     };
 
     useEffect(() => {
@@ -56,7 +60,8 @@ const writePrescription = () => {
     }, []);
 
     return (
-        <View className={`flex-1 ${StyleChange("bg-neutral-100", "bg-gray-800")}`}>
+        <Animated.View
+            className={`flex-1 ${StyleChange("bg-neutral-100", "bg-gray-800")}`}>
             <StatusBarColor />
 
             <View className='px-6 flex-1'>
@@ -88,7 +93,9 @@ const writePrescription = () => {
 
 
                 {/* Prescription  */}
-                <View className='rounded-xl py-1 space-y-3 mt-6 flex-1 flex-col w-full'>
+                <View
+                    className='rounded-xl py-1 space-y-3 mt-6 flex-1 flex-col w-full'
+                >
 
                     <View className={`${StyleChange("bg-white", "bg-gray-900")} rounded-xl py-3 px-3 space-x-3 justify-around w-full flex-row items-center`}>
 
@@ -105,37 +112,35 @@ const writePrescription = () => {
 
                     </View>
 
-                    <KeyboardAvoidingView
-                        className='flex-1'
-                        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                    >
-
-                        <ScrollView
-                            className='flex-1'
-                            showsVerticalScrollIndicator={false}
+                    {prescribedMedicines.length > 0 ? (
+                        <Animated.FlatList
+                            itemLayoutAnimation={_layout}
+                            data={prescribedMedicines}
+                            keyExtractor={(item) => item.id.toString()}
+                            renderItem={({ item }) => (
+                                <MedicineForm
+                                    key={item.id}
+                                    id={item.id}
+                                    name={item.name}
+                                    power={item.power}
+                                    day={item.day}
+                                    note={item?.note ?? ""}
+                                    medicineMealtime={item.medicineMealtime}
+                                />
+                            )}
                             onScroll={handleOnScroll}
-                        >
+                            keyboardShouldPersistTaps="handled"
+                            removeClippedSubviews={false} // Prevents premature removal
+                        />
+                    ) : (
+                        <Animated.View
+                            layout={_layout}
+                            className="flex-1 items-center py-30 justify-center space-y-3">
+                            <Fontisto name="pills" size={48} color={"gray"} />
+                            <Text className="text-center text-gray-400 text-sm">No medicine added</Text>
+                        </Animated.View>
+                    )}
 
-
-                            {prescribedMedicines.map(item => <MedicineForm
-                                key={item.id}
-                                id={item.id}
-                                name={item.name}
-                                power={item.power}
-                                day={item.day}
-                                note={item?.note ?? ""}
-                                medicineMealtime={item.medicineMealtime} />)}
-
-                            {prescribedMedicines.length <= 0 &&
-                                <View className='flex-1 items-center py-36 justify-center space-y-3'>
-                                    <Fontisto name="pills" size={48} color={"gray"} />
-                                    <Text className='text-center text-gray-400 text-sm'>No medicine added</Text>
-                                </View>
-                            }
-
-                        </ScrollView>
-
-                    </KeyboardAvoidingView>
 
                 </View>
 
@@ -161,7 +166,7 @@ const writePrescription = () => {
                 }
 
             </View >
-        </View >
+        </Animated.View >
     );
 };
 
