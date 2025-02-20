@@ -9,6 +9,7 @@ import { PaperProvider } from 'react-native-paper';
 import useLocalStorage from '@/hooks/useLocalStorage';
 import { useColorScheme } from 'nativewind';
 import { ColorSchemeName } from 'nativewind/dist/style-sheet/color-scheme';
+import { initializeDatabase } from '@/database/prescription';
 
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -20,11 +21,22 @@ export default function RootLayout() {
   const { setColorScheme } = useColorScheme();
   const { getItem } = useLocalStorage();
   const [isLoading, setIsLoading] = useState(true);
+  const [databaseLoaded, setDatabaseLoaded] = useState(false);
 
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
 
+  useEffect(() => {
+    setDatabaseLoaded(false);
+
+    const setupDB = async () => {
+      await initializeDatabase();
+    };
+
+    setupDB();
+    setDatabaseLoaded(true);
+  }, []);
 
   useEffect(() => {
     const fetchThemeColor = async () => {
@@ -40,13 +52,13 @@ export default function RootLayout() {
   }, [getItem, setColorScheme]);
 
   useEffect(() => {
-    if (loaded && !isLoading) {
+    if (loaded && !isLoading && databaseLoaded) {
       SplashScreen.hideAsync();
-      router.push("/(tabs)/writePrescription");
+      // router.push("/(tabs)/files");
     }
   }, [loaded, isLoading]);
 
-  if (!loaded || isLoading) {
+  if (!loaded || isLoading || !databaseLoaded) {
     return null;
   }
 

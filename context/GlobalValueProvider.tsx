@@ -4,6 +4,8 @@ import * as Crypto from 'expo-crypto';
 import { useColorScheme } from 'nativewind';
 import useLocalStorage from '@/hooks/useLocalStorage';
 import { ColorSchemeName } from 'nativewind/dist/style-sheet/color-scheme';
+import { addMedicines, addPatient } from '@/database/prescription';
+import { router } from 'expo-router';
 
 
 interface GlobalContextInterface {
@@ -99,11 +101,17 @@ const GlobalValueProvider = ({ children }: { children: React.ReactNode; }) => {
         return true;
     };
 
-    const handleSaveAndCreatePDF = () => {
+    const handleSaveAndCreatePDF = async () => {
         if (!checkInvalidInputValue())
             return;
 
-        console.log("PDF");
+        const newPatietID = await addPatient(patientDetails);
+
+        if (newPatietID) {
+            console.log(newPatietID);
+            await addMedicines(newPatietID, prescribedMedicines);
+        }
+        router.push('/files');
     };
 
     return <GlobalContext.Provider
