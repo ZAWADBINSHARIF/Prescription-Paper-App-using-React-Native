@@ -10,7 +10,7 @@ import useGlobalContext from '@/hooks/useGlobalContext';
 
 const _layout = LinearTransition.springify().damping(15);
 
-const MedicineForm = ({ id, name, power, day, note, medicineMealtime }: PrescribedMedicine) => {
+const MedicineForm = ({ id, name, power, days, note, medicineMealtime }: PrescribedMedicine) => {
 
     const { StyleChange } = useStyleChange();
     const { setPrescribedMedicineValue, handleRemoveMedicineForm, medicineFormErrorsIDs } = useGlobalContext();
@@ -49,7 +49,7 @@ const MedicineForm = ({ id, name, power, day, note, medicineMealtime }: Prescrib
 
             <View className='flex-row'>
                 <View className='flex-1 flex-row space-x-3'>
-                    <TextInput value={day} onChangeText={(value) => setPrescribedMedicineValue(id, "day", value)}
+                    <TextInput value={days} onChangeText={(value) => setPrescribedMedicineValue(id, "days", value)}
                         placeholder='Days' className='bg-neutral-100 flex-1 rounded-xl p-2 text-sm' keyboardType='numeric' />
                     <TextInput value={note} onChangeText={(value) => setPrescribedMedicineValue(id, "note", value)}
                         placeholder='Note' className='bg-neutral-100 flex-1 rounded-xl p-2 text-sm'
@@ -63,7 +63,7 @@ const MedicineForm = ({ id, name, power, day, note, medicineMealtime }: Prescrib
 
             {hasError &&
                 <View>
-                    <Text className='text-red-500 font-semibold'>⚠ Fill the medicine name, mealtime and days</Text>
+                    <Text className='text-red-500 font-semibold'>⚠ Fill the medicine name, mealtime and dayss</Text>
                 </View>
             }
 

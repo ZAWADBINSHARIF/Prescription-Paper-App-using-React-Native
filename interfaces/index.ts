@@ -16,7 +16,12 @@ export interface PrescribedMedicine {
     id: string,
     name: string,
     power: string,
-    day: string;
+    days: string;
     note?: string,
     medicineMealtime: MedicineMealtime;
+}
+
+export interface Prescription extends PatientDetails {
+    patient_id: number,
+    medicines: PrescribedMedicine[];
 }

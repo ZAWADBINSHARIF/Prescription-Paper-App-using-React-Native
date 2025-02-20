@@ -123,7 +123,7 @@ const writePrescription = () => {
                                     id={item.id}
                                     name={item.name}
                                     power={item.power}
-                                    day={item.day}
+                                    days={item.days}
                                     note={item?.note ?? ""}
                                     medicineMealtime={item.medicineMealtime}
                                 />

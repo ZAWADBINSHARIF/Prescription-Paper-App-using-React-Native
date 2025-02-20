@@ -1,10 +1,7 @@
-import { MedicineMealtime, PatientDetails, PrescribedMedicine } from '@/interfaces';
-import React, { createContext, useEffect, useState } from 'react';
+import { MedicineMealtime, PatientDetails, PrescribedMedicine, Prescription } from '@/interfaces';
+import React, { createContext, useState } from 'react';
 import * as Crypto from 'expo-crypto';
-import { useColorScheme } from 'nativewind';
-import useLocalStorage from '@/hooks/useLocalStorage';
-import { ColorSchemeName } from 'nativewind/dist/style-sheet/color-scheme';
-import { addMedicines, addPatient } from '@/database/prescription';
+import { addMedicines, addPatient, getAllPrescriptions } from '@/database/prescription';
 import { router } from 'expo-router';
 
 
@@ -20,6 +17,8 @@ interface GlobalContextInterface {
     handleRemoveMedicineForm: (id: string) => void;
     setPrescribedMedicineValue: (id: string, key: keyof PrescribedMedicine, value: string | MedicineMealtime) => void;
     handleSaveAndCreatePDF: () => void;
+    getPrescriptionsFromDatabase: () => Promise<void>;
+    allPrescriptions: Prescription[];
 }
 
 
@@ -37,6 +36,7 @@ const GlobalValueProvider = ({ children }: { children: React.ReactNode; }) => {
     const [prescribedMedicines, setPrescribedMedicines] = useState<PrescribedMedicine[]>([]);
     const [medicineFormErrorsIDs, setMedicineFormErrorsIDs] = useState<string[]>([]);
     const [patientDetailsError, setPatientDetailsError] = useState(false);
+    const [allPrescriptions, setAllPrescriptions] = useState<Prescription[]>([]);
 
     const handlePatientDetailsValue = (key: keyof PatientDetails, value: string) => {
         setPatientDetails({ ...patientDetails, [key]: value });
@@ -49,7 +49,7 @@ const GlobalValueProvider = ({ children }: { children: React.ReactNode; }) => {
             id,
             name: "",
             power: "",
-            day: "",
+            days: "",
             medicineMealtime: {
                 morning: false,
                 noon: false,
@@ -80,7 +80,7 @@ const GlobalValueProvider = ({ children }: { children: React.ReactNode; }) => {
 
     const checkInvalidInputValue = (): boolean => {
         const errorFormIDs = prescribedMedicines.filter(item => {
-            if (!item.name || !item.day || (!item.medicineMealtime.morning && !item.medicineMealtime.noon && !item.medicineMealtime.night)) {
+            if (!item.name || !item.days || (!item.medicineMealtime.morning && !item.medicineMealtime.noon && !item.medicineMealtime.night)) {
                 return item;
             }
         }).map(item => item.id);
@@ -111,11 +111,22 @@ const GlobalValueProvider = ({ children }: { children: React.ReactNode; }) => {
             console.log(newPatietID);
             await addMedicines(newPatietID, prescribedMedicines);
         }
+        getAllPrescriptions();
         router.push('/files');
+    };
+
+    const getPrescriptionsFromDatabase = async () => {
+
+        const prescriptions = await getAllPrescriptions();
+
+        if (prescriptions) {
+            setAllPrescriptions(prescriptions);
+        }
     };
 
     return <GlobalContext.Provider
         value={{
+            allPrescriptions,
             patientDetails,
             setPatientDetails,
             handlePatientDetailsValue,
@@ -126,7 +137,8 @@ const GlobalValueProvider = ({ children }: { children: React.ReactNode; }) => {
             handleAddMedicineForm,
             handleRemoveMedicineForm,
             setPrescribedMedicineValue,
-            handleSaveAndCreatePDF
+            handleSaveAndCreatePDF,
+            getPrescriptionsFromDatabase
         }}
     >
         {children}
